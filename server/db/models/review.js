@@ -3,8 +3,8 @@ var Sequelize = require('sequelize');
 var db = require('../_db');
 
 module.exports = db.define('review', {
-	content: {
-        type: Sequelize.TEXT,
+	product: {
+        type: Sequelize.STRING,
         //validate that the review is not blank
         validate:{
             min: 1

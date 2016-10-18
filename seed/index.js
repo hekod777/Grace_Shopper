@@ -23,7 +23,6 @@ var User = db.model('user');
 var Address = db.model('address');
 var Order = db.model('order');
 var Instrument = db.model('instrument');
-var OrderItem = db.model('orderitem');
 var faker = require('faker');
 var Promise = require('sequelize').Promise;
 var numUsers = 10;
@@ -98,8 +97,7 @@ var seedOrders = function() {
         orders.push({
             status: (isPlaced? 'order': 'cart'),
             orderDate: (isPlaced? randomDate(new Date(2012, 0, 1), new Date()): null),
-            userId: [...Array(numUsers + 1).keys()].slice(1)[Math.floor(Math.random() * numUsers)],
-            addressId: i+1,
+            userId: [...Array(numUsers + 1).keys()].slice(1)[Math.floor(Math.random() * numUsers)]
         });
     }
 
@@ -134,30 +132,6 @@ var seedInstruments = function() {
 
 };
 
-
-var seedOrderItems = function() {
-
-    var orderItems = [];
-    for (let i = 0; i < numUsers; i++) {
-
-        orderItems.push({
-            quantity: i+1,
-            price: i+1,
-            orderId: i+1,
-            instrumentId: i+1,
-        });
-    }
-
-    var creatingOrderItems = orderItems.map(function(orderItemsObj) {
-        return OrderItem.create(orderItemsObj);
-    });
-
-    return Promise.all(creatingOrderItems);
-
-};
-
-
-
 db.sync({ force: true })
     .then(function () {
         return seedUsers();
@@ -169,9 +143,6 @@ db.sync({ force: true })
             seedInstruments()
             ]);
     })
-    .then(function(){
-       return seedOrderItems();
-    })
     .then(function () {
         console.log(chalk.green('Seed successful!'));
         process.exit(0);
@@ -180,3 +151,13 @@ db.sync({ force: true })
         console.error(err);
         process.exit(1);
     });
+
+
+
+
+module.exports = {
+        seedUsers: seedUsers,
+        seedAddresses: seedAddresses,
+        seedOrders: seedOrders,
+        seedInstruments: seedInstruments,
+}
